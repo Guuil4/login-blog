@@ -50,7 +50,6 @@ app.get('/', (req, res) => {
     // Caso haja necessidade coloque pontos de verificação para verificar pontos da sua logica de negócios
     console.log(`${req.session.username ? `Usuário ${req.session.username} logado no IP ${req.connection.remoteAddress}` : 'Usuário não logado.'}  `);
     //console.log(req.connection)
-    ;
 });
 
 // Rota para a página de login
@@ -61,7 +60,13 @@ app.get('/login', (req, res) => {
 
 
 app.get('/about', (req, res) => {
-    res.render('pages/about', { req: req })
+    const dados = [
+        { titulo: "post 1", conteudo: "conteúdo post 1"},
+        { titulo: "post 2", conteudo: "conteúdo post 2"},
+        { titulo: "post 3", conteudo: "conteúdo post 3"},
+
+    ]
+    res.render('pages/about', { req: req, posts: dados})
 });
 
 // Rota para processar o formulário de login
