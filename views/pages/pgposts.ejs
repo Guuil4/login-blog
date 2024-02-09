@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ptbr">
+
+<head>
+    <%- include('../partials/head'); %>
+    <style>
+        /* CSS inline */
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-text {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .card-author {
+            font-size: 0.875rem;
+            color: #777;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body class="container">
+
+    <header>
+        <%- include('../partials/header'); %>
+        <% if(req.session.loggedin) { %>
+        <%- include('../partials/menu_dashboard'); %>
+        <% } %>        
+    </header>
+
+    <main>
+        
+    <%- include('../partials/posts'); %>
+    <!-- No seu arquivo EJS -->
+    
+    </main>
+
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+
+</body>
+</html>

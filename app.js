@@ -46,7 +46,8 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
     // Passe a variável 'req' para o template e use-a nas páginas para renderizar partes do HTML conforme determinada condição
     // Por exemplo de o usuário estive logado, veja este exemplo no arquivo views/partials/header.ejs
-    res.render('pages/index', { req: req });
+    // res.render('pages/index', { req: req });
+    res.redirect("/posts");
     // Caso haja necessidade coloque pontos de verificação para verificar pontos da sua logica de negócios
     console.log(`${req.session.username ? `Usuário ${req.session.username} logado no IP ${req.connection.remoteAddress}` : 'Usuário não logado.'}  `);
     //console.log(req.connection)
@@ -60,13 +61,27 @@ app.get('/login', (req, res) => {
 
 
 app.get('/about', (req, res) => {
-    const dados = [
-        { titulo: "post 1", conteudo: "conteúdo post 1"},
-        { titulo: "post 2", conteudo: "conteúdo post 2"},
-        { titulo: "post 3", conteudo: "conteúdo post 3"},
+    res.render('pages/about', { req: req })
+});
 
-    ]
-    res.render('pages/about', { req: req, posts: dados})
+    app.get('/posts', (req, res) => {
+        const query = 'SELECT * FROM posts;'
+
+        db.query(query, (err, results) => {
+            if (err) {
+                throw err;
+            }
+            // if (results.length > 0) {
+            //     req.session.loggedin = true;
+            //     req.session.username = username;
+            //     res.redirect('/dashboard');
+            // } else {
+            //     // res.send('Credenciais incorretas. <a href="/">Tente novamente</a>');
+            //     res.redirect('/login_failed');
+            // }
+
+            res.render('pages/pgposts', { req: req, posts: results });
+        });
 });
 
 // Rota para processar o formulário de login
@@ -208,6 +223,27 @@ app.get('/dashboard', (req, res) => {
     }
 });
 
+
+
+// Rota para excluir um post por ID
+app.get('/posts/delete/:id', (req, res) => {
+    const postId = req.params.id;
+  
+    // Consulta SQL para excluir o post com o ID fornecido
+    const sql = 'DELETE FROM posts WHERE id = ?';
+  
+    // Executar a consulta SQL
+    db.query(sql, [postId], (error, results) => {
+      if (error) {
+        console.error('Erro ao excluir o post:', error);
+        return res.status(500).json({ error: 'Erro ao excluir o post.' });
+      }
+  
+      console.log('Post com o ID ' + postId + ' excluído com sucesso.');
+      res.redirect('/');
+    });
+  });
+
 // Rota para processar a saida (logout) do usuário
 // Utilize-o para encerrar a sessão do usuário
 // Dica 1: Coloque um link de 'SAIR' na sua aplicação web
@@ -228,3 +264,24 @@ app.listen(3000, () => {
     console.log('----Login (MySQL version)-----')
     console.log('Servidor rodando na porta 3000');
 });
+  
+  // Rota para excluir todos os posts
+app.get('/posts/deleteAll', (req, res) => {
+    // Consulta SQL para excluir todos os posts
+    const sql = 'DELETE FROM posts';
+
+    // Executar a consulta SQL
+    db.query(sql, (error, results) => {
+        if (error) {
+            console.error('Erro ao excluir todos os posts:', error);
+            return res.status(500).json({ error: 'Erro ao excluir todos os posts.' });
+        }
+
+        console.log('Todos os posts foram excluídos com sucesso.');
+        res.redirect('/'); // Redireciona de volta à página inicial ou outra página desejada
+    });
+});
+
+
+
+  
